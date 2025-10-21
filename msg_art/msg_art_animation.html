@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Gate 25 – Vessel of Love</title>
+<style>
+  body {
+    margin: 0;
+    overflow: hidden;
+    background: black;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  #warning {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.5em;
+    color: #ffeb3b;
+    opacity: 1;
+    text-align: center;
+    transition: opacity 4s ease-out; /* 천천히 사라지도록 */
+    letter-spacing: 0.05em;
+  }
+  #message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.2);
+    font-size: 2.5em;
+    color: #fffde7;
+    opacity: 0;
+    letter-spacing: 0.1em;
+    text-align: center;
+    transition: all 3s ease-out;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+<div id="warning">영상을 끝까지 시청하시면 우주의 메시지를 보여줍니다.</div>
+<div id="message">모든 존재는 이미 신성하다.</div>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const centerX = canvas.width / 2;
+const centerY = canvas.height / 2;
+
+// 별 초기화
+const stars = [];
+const nStars = 500;
+for (let i = 0; i < nStars; i++) {
+    stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: Math.random() * 2 + 1,
+        alpha: Math.random() * 0.5 + 0.2
+    });
+}
+
+// 태양빛 초기화
+let sunRadius = 10;
+const sunMaxRadius = Math.max(canvas.width, canvas.height);
+let sunAlpha = 1;
+
+const warningDiv = document.getElementById("warning");
+const messageDiv = document.getElementById("message");
+
+let messageShown = false;
+let fadeOutSun = false;
+
+// 1분 기준 속도 계산
+const sunSpeed = sunMaxRadius * 0.00033; // 천천히 확장
+const sunFadeSpeed = 0.0011; // 천천히 사라짐
+
+function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // 별 그리기
+    for (let star of stars) {
+        ctx.globalAlpha = star.alpha;
+        ctx.fillStyle = "white";
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.size, 0, Math.PI*2);
+        ctx.fill();
+    }
+
+    // 태양 그리기
+    ctx.globalAlpha = sunAlpha;
+    const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, sunRadius);
+    gradient.addColorStop(0, "rgba(255,255,200,1)");
+    gradient.addColorStop(0.7, "rgba(255,255,180,0.6)");
+    gradient.addColorStop(1, "rgba(255,255,150,0)");
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, sunRadius, 0, Math.PI*2);
+    ctx.fill();
+
+    // 태양 반경 확장
+    if (sunRadius < sunMaxRadius) {
+        sunRadius += sunSpeed;
+    } else if (!messageShown) {
+        fadeOutSun = true;
+        messageShown = true;
+
+        // 메시지 등장
+        messageDiv.style.opacity = 1;
+        messageDiv.style.transform = "translate(-50%, -50%) scale(1)";
+
+        // 메시지 등장과 동시에 상단 경고문구 천천히 사라지기
+        warningDiv.style.opacity = 0;
+    }
+
+    // 태양빛 서서히 사라짐
+    if (fadeOutSun && sunAlpha > 0) {
+        sunAlpha -= sunFadeSpeed;
+        if (sunAlpha < 0) sunAlpha = 0;
+    }
+
+    requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+
+</body>
+</html>
