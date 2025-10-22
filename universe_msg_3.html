@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>우주 속 반짝별</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* 황금 원 */
+  .gold-circle {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle at center, #ffd700, #b8860b);
+    box-shadow: 0 0 30px #ffd70088;
+    overflow: hidden;
+    z-index: 2;
+  }
+
+  /* 중심 반짝별 */
+  .star {
+    position: absolute;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 0 10px white, 0 0 20px #fffacd;
+    animation: twinkle 1.5s infinite alternate;
+  }
+
+  @keyframes twinkle {
+    0% { transform: scale(0.5); opacity: 0.3; }
+    50% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(0.7); opacity: 0.5; }
+  }
+
+  /* 우주 배경 별 */
+  .space-star {
+    position: absolute;
+    border-radius: 50%;
+    background: white;
+    opacity: 0.8;
+    box-shadow: 0 0 3px white;
+    animation: spaceTwinkle linear infinite;
+  }
+
+  @keyframes spaceTwinkle {
+    0% { opacity: 0.2; transform: translateY(0) scale(0.5); }
+    50% { opacity: 1; transform: translateY(-5px) scale(1); }
+    100% { opacity: 0.2; transform: translateY(0) scale(0.5); }
+  }
+</style>
+</head>
+<body>
+  <div class="gold-circle" id="circle"></div>
+
+  <script>
+    const circle = document.getElementById('circle');
+    
+    // 중심 황금 원 별
+    const starCount = 30;
+    for(let i=0; i<starCount; i++){
+      const star = document.createElement('div');
+      star.className = 'star';
+      
+      const angle = Math.random() * 2 * Math.PI;
+      const radius = Math.random() * 80 + 20;
+      const x = 100 + radius * Math.cos(angle) - 2;
+      const y = 100 + radius * Math.sin(angle) - 2;
+      
+      star.style.left = `${x}px`;
+      star.style.top = `${y}px`;
+      star.style.animationDuration = `${Math.random() * 1 + 1}s`;
+      star.style.width = star.style.height = `${Math.random() * 3 + 2}px`;
+
+      circle.appendChild(star);
+    }
+
+    // 배경 우주 별
+    const bgStarCount = 150;
+    for(let i=0; i<bgStarCount; i++){
+      const bgStar = document.createElement('div');
+      bgStar.className = 'space-star';
+      const size = Math.random() * 2 + 1;
+      bgStar.style.width = bgStar.style.height = `${size}px`;
+      bgStar.style.left = `${Math.random() * window.innerWidth}px`;
+      bgStar.style.top = `${Math.random() * window.innerHeight}px`;
+      bgStar.style.animationDuration = `${Math.random() * 3 + 2}s`;
+
+      document.body.appendChild(bgStar);
+    }
+  </script>
+</body>
+</html>
